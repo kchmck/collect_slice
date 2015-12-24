@@ -5,6 +5,6 @@ version = "1.0.0"
 authors = ["Mick Koch <mick@kochm.co>"]
 readme = "README.md"
 license = "MIT"
-documentation = "https://kchmck.github.io/collect_slice"
+documentation = "https://kchmck.github.io/doc/collect_slice"
 repository = "https://github.com/kchmck/collect_slice"
 keywords = ["collect", "slice", "stack"]
