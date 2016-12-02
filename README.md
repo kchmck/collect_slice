@@ -1,5 +1,7 @@
 # collect\_slice
 
+[Documentation](https://docs.rs/collect_slice)
+
 Collect an iterator into a slice.
 
 Rust comes with the `Iterator::collect` method for collecting an iterator's items into
