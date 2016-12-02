@@ -81,6 +81,30 @@ pub trait CollectSlice: Iterator {
     /// ```
     fn collect_slice(&mut self, slice: &mut [Self::Item]) -> usize;
 
+    /// Perform `collect_slice()` and panic if iterator yielded too few items to fill the
+    /// slice.
+    ///
+    /// If this function succeeds, the number of items written equals the size of the
+    /// given slice.
+    ///
+    /// # Examples
+    ///
+    /// ```rust,should_panic
+    /// use collect_slice::CollectSlice;
+    ///
+    /// let mut buf = [0; 10];
+    ///
+    /// // Succeeds as long as entire slice is filled.
+    /// (0..20).collect_slice_fill(&mut buf[..]);
+    /// (0..5).collect_slice_fill(&mut buf[..5]);
+    ///
+    /// // Panics otherwise!
+    /// (0..5).collect_slice_fill(&mut buf[..]);
+    /// ```
+    fn collect_slice_fill(&mut self, slice: &mut [Self::Item]) {
+        assert_eq!(self.collect_slice(slice), slice.len());
+    }
+
     /// Perform `collect_slice()` and panic if the slice was too small to hold all the
     /// items.
     ///
@@ -261,5 +285,28 @@ mod test {
         (0..7).map(|i| {
             i + 1
         }).collect_slice_exhaust(&mut buf[..]);
+    }
+
+    #[test]
+    fn test_filled() {
+        let mut buf = [0; 5];
+
+        (0..5).map(|i| {
+            i + 1
+        }).collect_slice_fill(&mut buf[..]);
+
+        (0..100).map(|i| {
+            i + 1
+        }).collect_slice_fill(&mut buf[..]);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_filled_under() {
+        let mut buf = [0; 5];
+
+        (0..3).map(|i| {
+            i + 1
+        }).collect_slice_fill(&mut buf[..]);
     }
 }
