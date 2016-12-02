@@ -168,7 +168,7 @@ pub trait CollectSlice: Iterator {
     }
 }
 
-impl<T, I: Iterator<Item = T>> CollectSlice for I {
+impl<I: ?Sized> CollectSlice for I where I: Iterator {
     fn collect_slice(&mut self, slice: &mut [Self::Item]) -> usize {
         slice.iter_mut().zip(self).fold(0, |count, (dest, item)| {
             *dest = item;
@@ -308,5 +308,23 @@ mod test {
         (0..3).map(|i| {
             i + 1
         }).collect_slice_fill(&mut buf[..]);
+    }
+
+    #[test]
+    fn test_unsized() {
+        let mut buf = [0; 5];
+
+        let it: &mut Iterator<Item=_> = &mut (0..5).map(|i| {
+            i + 1
+        });
+        let count = <Iterator<Item=_> as CollectSlice>::collect_slice(it, &mut buf[..]);
+
+        assert_eq!(count, 5);
+
+        assert_eq!(buf[0], 1);
+        assert_eq!(buf[1], 2);
+        assert_eq!(buf[2], 3);
+        assert_eq!(buf[3], 4);
+        assert_eq!(buf[4], 5);
     }
 }
