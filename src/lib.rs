@@ -81,6 +81,34 @@ pub trait CollectSlice: Iterator {
     /// ```
     fn collect_slice(&mut self, slice: &mut [Self::Item]) -> usize;
 
+    /// Perform `collect_slice()` and panic if the slice was too small to hold all the
+    /// items.
+    ///
+    /// Return the number of items written.
+    ///
+    /// # Examples
+    ///
+    /// ```rust,should_panic
+    /// use collect_slice::CollectSlice;
+    ///
+    /// let mut buf = [0; 10];
+    ///
+    /// // Succeeds as long as iterator yields all its items.
+    /// let count = (0..10).collect_slice_exhaust(&mut buf[..]);
+    /// assert_eq!(count, 10);
+    /// let count = (0..5).collect_slice_exhaust(&mut buf[..]);
+    /// assert_eq!(count, 5);
+    ///
+    /// // Panics otherwise!
+    /// (0..20).collect_slice_exhaust(&mut buf[..]);
+    ///
+    /// ```
+    fn collect_slice_exhaust(&mut self, slice: &mut [Self::Item]) -> usize {
+        let count = self.collect_slice(slice);
+        assert!(self.next().is_none());
+        count
+    }
+
     /// Perform `collect_slice()` and panic if there weren't enough items to fill up
     /// the slice or the slice was too small to hold all the items.
     ///
@@ -112,8 +140,7 @@ pub trait CollectSlice: Iterator {
     /// (0..5).collect_slice_checked(&mut buf[..]);
     /// ```
     fn collect_slice_checked(&mut self, slice: &mut [Self::Item]) {
-        assert!(self.collect_slice(slice) == slice.len());
-        assert!(self.next().is_none());
+        assert_eq!(self.collect_slice_exhaust(slice), slice.len());
     }
 }
 
@@ -211,5 +238,28 @@ mod test {
         (0..5).map(|i| {
             i + 1
         }).collect_slice_checked(&mut buf[..]);
+    }
+
+    #[test]
+    fn test_exhaust() {
+        let mut buf = [0; 5];
+
+        (0..3).map(|i| {
+            i + 1
+        }).collect_slice_exhaust(&mut buf[..]);
+
+        (0..5).map(|i| {
+            i + 1
+        }).collect_slice_exhaust(&mut buf[..]);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_exhaust_over() {
+        let mut buf = [0; 5];
+
+        (0..7).map(|i| {
+            i + 1
+        }).collect_slice_exhaust(&mut buf[..]);
     }
 }
