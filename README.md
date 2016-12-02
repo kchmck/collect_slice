@@ -16,15 +16,16 @@ The trait is automatically implemented for any type that implements `Iterator`.
 ```rust
 use collect_slice::CollectSlice;
 
-let mut orig = [0; 96];
-(0..96).map(|i| i * 2).collect_slice_checked(&mut orig[..]);
+let mut orig = [0; 8];
+(0..8).map(|i| i * 2).collect_slice_checked(&mut orig[..]);
+assert_eq!(orig, [0, 2, 4, 6, 8, 10, 12, 14]);
 
-let mut buf = [0.0; 96];
+let mut buf = [42; 8];
 orig.iter()
-    .map(|&x| x as f32 * std::f32::consts::PI)
+    .map(|&x| x + 10)
     .collect_slice_checked(&mut buf[..]);
+assert_eq!(buf, [10, 12, 14, 16, 18, 20, 22, 24]);
 ```
-
 
 # Usage
 
@@ -32,7 +33,7 @@ This crate can be used through cargo by adding it as a dependency in `Cargo.toml
 
 ```toml
 [dependencies]
-collect_slice = "1.0.0"
+collect_slice = "^1.1.0"
 ```
 and importing it in the crate root:
 
