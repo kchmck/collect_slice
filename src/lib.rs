@@ -144,7 +144,7 @@ pub trait CollectSlice: Iterator {
     /// ```
     /// use collect_slice::CollectSlice;
     ///
-    /// // Succeeds as long as iterator count equals slice capacity.
+    /// // Succeeds as long as iteration count equals slice capacity.
     /// let mut buf = [0; 10];
     /// (0..10).collect_slice_checked(&mut buf[..]);
     /// (0..5).collect_slice_checked(&mut buf[2..7]);
