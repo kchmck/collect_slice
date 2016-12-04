@@ -31,7 +31,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! collect_slice = "^1.1.0"
+//! collect_slice = "^1.2.0"
 //! ```
 //! and importing it in the crate root:
 //!

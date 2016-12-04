@@ -1,10 +1,10 @@
 [package]
 name = "collect_slice"
 description = "Collect an iterator into a slice."
-version = "1.1.0"
+version = "1.2.0"
 authors = ["Mick Koch <mick@kochm.co>"]
 readme = "README.md"
 license = "MIT"
 documentation = "https://docs.rs/collect_slice"
 repository = "https://github.com/kchmck/collect_slice"
-keywords = ["collect", "slice", "stack", "iterator"]
+keywords = ["collect", "slice", "stack", "iterator", "array"]
