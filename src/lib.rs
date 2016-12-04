@@ -190,12 +190,7 @@ mod test {
         }).collect_slice(&mut buf[..]);
 
         assert_eq!(count, 5);
-
-        assert_eq!(buf[0], 1);
-        assert_eq!(buf[1], 2);
-        assert_eq!(buf[2], 3);
-        assert_eq!(buf[3], 4);
-        assert_eq!(buf[4], 5);
+        assert_eq!(buf, [1, 2, 3, 4, 5]);
     }
 
     #[test]
@@ -207,12 +202,7 @@ mod test {
         }).collect_slice(&mut buf[1..]);
 
         assert_eq!(count, 3);
-
-        assert_eq!(buf[0], 0);
-        assert_eq!(buf[1], 1);
-        assert_eq!(buf[2], 2);
-        assert_eq!(buf[3], 3);
-        assert_eq!(buf[4], 0);
+        assert_eq!(buf, [0, 1, 2, 3, 0]);
     }
 
     #[test]
@@ -226,10 +216,7 @@ mod test {
         let count = iter.collect_slice(&mut buf[..]);
 
         assert_eq!(count, 3);
-
-        assert_eq!(buf[0], 1);
-        assert_eq!(buf[1], 2);
-        assert_eq!(buf[2], 3);
+        assert_eq!(buf, [1, 2, 3]);
 
         assert_eq!(iter.next().unwrap(), 4);
         assert_eq!(iter.next().unwrap(), 5);
@@ -242,6 +229,8 @@ mod test {
         (0..5).map(|i| {
             i + 1
         }).collect_slice_checked(&mut buf[..]);
+
+        assert_eq!(buf, [1, 2, 3, 4, 5]);
     }
 
     #[test]
@@ -272,9 +261,13 @@ mod test {
             i + 1
         }).collect_slice_exhaust(&mut buf[..]);
 
+        assert_eq!(buf, [1, 2, 3, 0, 0]);
+
         (0..5).map(|i| {
             i + 1
         }).collect_slice_exhaust(&mut buf[..]);
+
+        assert_eq!(buf, [1, 2, 3, 4, 5]);
     }
 
     #[test]
@@ -295,9 +288,13 @@ mod test {
             i + 1
         }).collect_slice_fill(&mut buf[..]);
 
-        (0..100).map(|i| {
+        assert_eq!(buf, [1, 2, 3, 4, 5]);
+
+        (50..100).map(|i| {
             i + 1
         }).collect_slice_fill(&mut buf[..]);
+
+        assert_eq!(buf, [51, 52, 53, 54, 55]);
     }
 
     #[test]
@@ -320,11 +317,6 @@ mod test {
         let count = <Iterator<Item=_> as CollectSlice>::collect_slice(it, &mut buf[..]);
 
         assert_eq!(count, 5);
-
-        assert_eq!(buf[0], 1);
-        assert_eq!(buf[1], 2);
-        assert_eq!(buf[2], 3);
-        assert_eq!(buf[3], 4);
-        assert_eq!(buf[4], 5);
+        assert_eq!(buf, [1, 2, 3, 4, 5]);
     }
 }
